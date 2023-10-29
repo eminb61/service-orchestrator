@@ -15,15 +15,14 @@ def reset_instance():
         
         if response_reset.status_code != 200:
             raise ConnectionError("Failed to reset Vertisim instance.")
-        
-        print(response_reset.text)
 
         # Wait for Vertisim to be ready
         wait_for_vertisim()
         
+        # print("Requested initial state from Vertisim instance.")
         # Initialize the new Vertisim instance and get initial state
         response_initialize = requests.get(f'{VERTISIM_URL}/get_initial_state', timeout=30)
-        print("Successfully initialized the new Vertisim instance.")
+        # print("Successfully initialized the new Vertisim instance.")
         
         if response_initialize.status_code != 200:
             raise ConnectionError(f"Failed to get the initial states from new Vertisim instance. Status code: {response_initialize.status_code}, Response text: {response_initialize.text}")
@@ -44,7 +43,6 @@ def wait_for_vertisim(timeout: int = 60):
         try:
             response = requests.get(f'{VERTISIM_URL}/status', timeout=5)
             if response.status_code == 200:
-                print("Vertisim is now ready!")
                 break
         except requests.RequestException as e:
             print(f"Waiting for Vertisim to be ready. Error: {str(e)}")
