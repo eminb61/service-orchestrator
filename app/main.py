@@ -11,7 +11,7 @@ VERTISIM_URL = "http://vertisim_service:5001"
 def reset_instance():
     try:
         # Reset the Vertisim instance
-        response_reset = requests.post(f'{VERTISIM_URL}/reset', timeout=30)
+        response_reset = requests.post(f'{VERTISIM_URL}/reset', timeout=60)
         
         if response_reset.status_code != 200:
             raise ConnectionError("Failed to reset Vertisim instance.")
@@ -21,7 +21,7 @@ def reset_instance():
         
         # print("Requested initial state from Vertisim instance.")
         # Initialize the new Vertisim instance and get initial state
-        response_initialize = requests.get(f'{VERTISIM_URL}/get_initial_state', timeout=30)
+        response_initialize = requests.get(f'{VERTISIM_URL}/get_initial_state', timeout=60)
         # print("Successfully initialized the new Vertisim instance.")
         
         if response_initialize.status_code != 200:
