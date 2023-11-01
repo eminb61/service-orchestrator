@@ -2,6 +2,7 @@ import docker
 import requests
 import time
 from fastapi import FastAPI
+from requests.exceptions import RequestException
 
 app = FastAPI()
 
@@ -33,7 +34,7 @@ def reset_instance():
     except Exception as e:
         return {"status": "Error", "detail": str(e)}
     
-def wait_for_vertisim(timeout: int = 60):
+def wait_for_vertisim(timeout: int = 120):
     """
     Checks whether Vertisim is ready to accept the next request.
     """
@@ -41,14 +42,13 @@ def wait_for_vertisim(timeout: int = 60):
 
     while True:
         try:
-            response = requests.get(f'{VERTISIM_URL}/status', timeout=5)
+            response = requests.get(f'{VERTISIM_URL}/status', timeout=60)
             if response.status_code == 200:
                 break
-        except requests.RequestException as e:
+        except RequestException as e:
             print(f"Waiting for Vertisim to be ready. Error: {str(e)}")
+            time.sleep(1) # Delay for 1 second before next attempt
 
         # Check if timeout has been reached
         if time.time() - start_time > timeout:
             raise TimeoutError("Timed out while waiting for Vertisim to be ready.")
-
-        time.sleep(1)  # Delay for 1 second before next attempt
