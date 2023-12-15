@@ -22,15 +22,20 @@ def reset_instance():
         
         # print("Requested initial state from Vertisim instance.")
         # Initialize the new Vertisim instance and get initial state
-        response_initialize = requests.get(f'{VERTISIM_URL}/get_initial_state', timeout=120)
+        response_data = requests.get(f'{VERTISIM_URL}/get_initial_state', timeout=120)
         # print("Successfully initialized the new Vertisim instance.")
         
-        if response_initialize.status_code != 200:
-            raise ConnectionError(f"Failed to get the initial states from new Vertisim instance. Status code: {response_initialize.status_code}, Response text: {response_initialize.text}")
+        if response_data.status_code != 200:
+            raise ConnectionError(f"Failed to get the initial states from new Vertisim instance. Status code: {response_data.status_code}, Response text: {response_data.text}")
         
         # Return the initial state to the caller
-        return {"status": "Success", "initial_state": response_initialize.json()}
-    
+        response_data = response_data.json()
+        return {
+            "status": "Success", 
+            "initial_state": response_data['initial_state'], 
+            "action_mask": response_data['action_mask']
+        }
+            
     except Exception as e:
         return {"status": "Error", "detail": str(e)}
     
