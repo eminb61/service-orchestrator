@@ -1,4 +1,3 @@
-import docker
 import requests
 import time
 from fastapi import FastAPI
